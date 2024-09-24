@@ -274,24 +274,32 @@ class Au{
         double d = a + (b - a) / gr;
 
         vector<vector<double>> temp_atoms = atoms; // Making a copy of input atoms in order to run series of calculations later
+        
+        // Updating the position and calculating the LJ Energy of the updated cluster
         Update_Positions(temp_atoms, forces, c);
         double energy_c = Calculate_Cluster_Energy(temp_atoms);
 
         temp_atoms = atoms;
+
+        // Updating the position and calculating the LJ Energy of the updated cluster
         Update_Positions(temp_atoms, forces, d);
         double energy_d = Calculate_Cluster_Energy(temp_atoms);
 
         // As long as difference between c & d is greater than the tolerance, this block will always run
         while (fabs(c - d) > tol) { // Choose fabs() as we are dealing with decimal places in these calculations
+
+            // If  c is lower than d, the minimum likely lies between a and d.
             if (energy_c < energy_d) {
                 b = d;
             } else {
-                a = c;
+                a = c; // Otherwise lower bound a is set to c
             }
 
+            // Recalculating c and d after adjusting the interval
             c = b - (b - a) / gr;
             d = a + (b - a) / gr;
 
+            // Making a copy of atoms, updating the positions, and finding its cluster energy
             temp_atoms = atoms;
             Update_Positions(temp_atoms, forces, c);
             energy_c = Calculate_Cluster_Energy(temp_atoms);
@@ -301,7 +309,7 @@ class Au{
             energy_d = Calculate_Cluster_Energy(temp_atoms);
         }
 
-        return (b + a) / 2;
+        return (b + a) / 2; // Return the midpoint of the final interval
     }
 
 
