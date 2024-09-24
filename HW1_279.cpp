@@ -208,7 +208,6 @@ class Au{
 
         int iterations = 0; // Variable to count the number of iterations our SD will take to converge
         while(true){ // Starting an infinite loop that will run until convergance is reached
-            iterations++; // Increasing by 1 each time the code is run
             
             // Norm of the forces to check convergence
             double force_norm = 0.0;
@@ -247,6 +246,8 @@ class Au{
             cout << "current energy: " << scientific << setprecision(4) << current_energy << endl;
             cout << "Central Difference Force" << endl;
             Print_Forces(forces);
+
+            iterations++; // Increasing iterations each time we reach the end of the loop
         }
 
         // Information to be printed at the end, once convergance has been reached
@@ -350,6 +351,17 @@ int main(){
     }
     double t = atom3.Calculate_Cluster_Energy(coords3);
     cout << "E_LJ = " << t << endl;
+    cout << endl << endl;
+
+
+    // Using my_testcase.txt from 'Energy/'
+    Au atom4;
+    vector<vector<double>> coords_my_testcase = atom3.Read_Atoms("sample_input/Energy/my_testcase.txt");
+    for(auto row : coords_my_testcase){
+        cout << "79(" << row[0] << ", " << row[1] << ", " << row[2] << ")" << endl;
+    }
+    double my_t_E = atom4.Calculate_Cluster_Energy(coords_my_testcase);
+    cout << "E_LJ = " << my_t_E << endl;
     cout << endl << endl;
 
 

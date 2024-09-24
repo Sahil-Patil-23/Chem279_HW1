@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt 
 
 def calculate_error(analytical_forces, numerical_forces):
+    # Function to calculate the error that will be plotted
     error = 0.0
     for i in range(len(numerical_forces)):
         for j in range(3): # For each coordinate in 3D space (x,y,z)
@@ -9,7 +10,7 @@ def calculate_error(analytical_forces, numerical_forces):
     return np.sqrt(error)
 
 
-
+# Arrays below are all the data generated from 'HW1.cpp' file
 analytical_forces = np.array([
     [-4.2191e-02 , -8.9489e-01 , -4.2191e-02, 9.7927e-01],
     [5.6398e-01 , 0.0000e+00 , -5.6398e-01 , 0.0000e+00],
@@ -68,6 +69,7 @@ central_forces_h_0001 = np.array([
 
 h = np.array([0.1, 0.01, 0.001, 0.0001])
 
+# Calculating error for forward differences
 forward_errors = np.array([
     calculate_error(analytical_forces, forward_forces_h_1),
     calculate_error(analytical_forces, forward_forces_h_01),
@@ -75,6 +77,7 @@ forward_errors = np.array([
     calculate_error(analytical_forces, forward_forces_h_0001)
 ])
 
+# Calculating error for central differences
 central_errors = np.array([
     calculate_error(analytical_forces, central_forces_h_1),
     calculate_error(analytical_forces, central_forces_h_01),
@@ -82,14 +85,20 @@ central_errors = np.array([
     calculate_error(analytical_forces, central_forces_h_0001)
 ])
 
+# Replace zeros in central_errors with a small value (e.g., 1e-10)
+central_errors[central_errors == 0] = 1e-10
+
 # Create a log-log plot
 plt.figure(figsize=(10, 6))
 
+slope_forward_d = np.polyfit(np.log(h), np.log(forward_errors), 1)[0]
+slope_central_d = np.polyfit(np.log(h), np.log(central_errors), 1)[0]
+
 # Forward difference error
-plt.plot(np.log(h), np.log(forward_errors), label="Forward Difference Error", marker='o')
+plt.plot(np.log(h), np.log(forward_errors), label=f"Forward Difference Error (slope = {slope_forward_d})", marker='o')
 
 # Central difference error
-plt.plot(np.log(h), np.log(central_errors), label="Central Difference Error", marker='o')
+plt.plot(np.log(h), np.log(central_errors), label=f"Central Difference Error (slope = {slope_central_d})", marker='o')
 
 # Labels and legend
 plt.xlabel("Log(Step size h)")
@@ -98,5 +107,5 @@ plt.title("Error vs Step Size")
 plt.legend()
 plt.grid(True)
 
-# Show the plot
-plt.show()
+# Save the plot as a png file 
+plt.savefig('Error_vs_StepSize.png')
